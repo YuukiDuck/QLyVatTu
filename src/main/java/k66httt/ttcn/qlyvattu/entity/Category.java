@@ -11,33 +11,24 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
-@Table(name = "users")
+@Table(name = "category")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class User {
+public class Category {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String username;
-    private String email;
-    private String password;
-    private String fullname;
-    private String phone;
-    private Boolean active = true;
-    private String activationKey;
-    private String rememberKey;
+    private String name;
+    private Integer categoryType;
     private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
 
-    @ManyToOne
-    @JoinColumn(name = "authority_name")
-    private Authority authority;
+    @ManyToOne @JoinColumn(name = "parent_id")
+    private Category parent;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "parent")
     @JsonIgnore
-    private List<UserAddress> addresses;
+    private List<Category> children;
 }
-
