@@ -1,54 +1,43 @@
 package k66httt.ttcn.qlyvattu.api;
 
-import k66httt.ttcn.qlyvattu.entity.Product;
+import k66httt.ttcn.qlyvattu.dto.ProductDto;
 import k66httt.ttcn.qlyvattu.service.ProductService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/products")
+@RequiredArgsConstructor
 public class ProductAPI {
-    @Autowired
-    private final ProductService service;
 
-    public ProductAPI(ProductService service) {
-        this.service = service;
+    private final ProductService productService;
+
+    @PostMapping
+    public ResponseEntity<ProductDto> createProduct(@RequestBody ProductDto dto) {
+        return ResponseEntity.ok(productService.createProduct(dto));
     }
 
-    @PostMapping("/admin/addProduct")
-    public Product addProduct(@RequestBody Product product) {
-        return service.saveProduct(product);
+    @GetMapping
+    public ResponseEntity<List<ProductDto>> getAllProducts() {
+        return ResponseEntity.ok(productService.getAllProducts());
     }
 
-    @PostMapping("/admin/addProducts")
-    public List<Product> addProducts(@RequestBody List<Product> products) {
-        return service.saveProducts(products);
+    @GetMapping("/{id}")
+    public ResponseEntity<ProductDto> getProductById(@PathVariable Long id) {
+        return ResponseEntity.ok(productService.getProductById(id));
     }
 
-    @GetMapping("/products")
-    public List<Product> findAllProducts() {
-        return service.getProducts();
+    @PutMapping("/{id}")
+    public ResponseEntity<ProductDto> updateProduct(@PathVariable Long id, @RequestBody ProductDto dto) {
+        return ResponseEntity.ok(productService.updateProduct(id, dto));
     }
 
-    @GetMapping("/productById/{id}")
-    public Product findProductById(@PathVariable Long id) {
-        return service.getProductById(id);
-    }
-
-    @GetMapping("/product/{name}")
-    public Product findProductByName(@PathVariable String name) {
-        return service.getProductByName(name);
-    }
-
-//    @PutMapping("/update")
-//    public Product updateProduct(@RequestBody Product product) {
-//        return service.updateProduct(product);
-//    }
-
-    @DeleteMapping("/delete/{id}")
-    public String deleteProduct(@PathVariable Long id) {
-        return service.deleteProduct(id);
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deleteProduct(@PathVariable Long id) {
+        productService.deleteProduct(id);
+        return ResponseEntity.ok("Product deleted successfully");
     }
 }
